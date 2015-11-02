@@ -33,7 +33,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     RequestQueue queue;
-    public static String URL = "";
+    public static String URL = "http://83.212.105.218/phpia_larisa/give_json2.php";
     public static String URLTest = URL;
     TextView textView;
     TextView idTextView;
@@ -79,6 +79,8 @@ public class MainActivity extends AppCompatActivity {
         // Get a RequestQueue
         queue = MySingleton.getInstance(this.getApplicationContext()).
                 getRequestQueue();
+        @SuppressWarnings("unchecked")
+
 
         GsonRequest gsonRequest = new GsonRequest(URLTest, Point[].class, null, new Response.Listener<Point[]>() {
 
@@ -87,11 +89,11 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     List<Point> pointList = Arrays.asList(points);
                     for (Point point : pointList){
-                        Toast.makeText(getApplicationContext(),point.getDimos().toString(),Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(),point.getDimos(),Toast.LENGTH_LONG).show();
                         Log.e("A POINT ", point.toString());
-                        Log.e("A POINT DIMOS ", point.getDimos().toString());
-                        idTextView.setText(point.getId() + "");
-                        dimosTextView.setText(point.getDimos().toString());
+                        Log.e("A POINT DIMOS ", point.getDimos());
+                        idTextView.setText(point.getId());
+                        dimosTextView.setText(point.getDimos());
                         System.out.println(point.getHighResImageUrl1());
                     }
 
@@ -117,34 +119,35 @@ public class MainActivity extends AppCompatActivity {
         //loadJsonFromURL();
     }
 
-    private void loadJsonFromURL() {
+//    private void loadJsonFromURL() {
+//
+//        JsonArrayRequest request = new JsonArrayRequest
+//                (Request.Method.GET, URL, new Response.Listener<JSONArray>() {
+//                    @Override
+//                    public void onResponse(JSONArray response) {
+//                        try {
+//
+//                            textView.setText(String.valueOf(response));
+//                            Toast toast = Toast.makeText(getApplicationContext(),"success",Toast.LENGTH_LONG);
+//
+//                            toast.show();
+//
+//
+//                        } catch (Exception e) {
+//                            Log.i("error", String.valueOf(e));
+//                        }
+//                    }
+//                },new Response.ErrorListener(){
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        Log.i("error", String.valueOf(error));
+//                    }
+//                });
+//
+//        MySingleton.getInstance(this).addToRequestQueue(request);
+//
+//    }
 
-        JsonArrayRequest request = new JsonArrayRequest
-                (Request.Method.GET, URL, new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        try {
-
-                            textView.setText(String.valueOf(response));
-                            Toast toast = Toast.makeText(getApplicationContext(),"success",Toast.LENGTH_LONG);
-
-                            toast.show();
-
-
-                        } catch (Exception e) {
-                            Log.i("error", String.valueOf(e));
-                        }
-                    }
-                },new Response.ErrorListener(){
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.i("error", String.valueOf(error));
-                    }
-                });
-
-        MySingleton.getInstance(this).addToRequestQueue(request);
-
-    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
