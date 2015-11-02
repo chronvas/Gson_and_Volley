@@ -1,5 +1,7 @@
 package com.example.big.gsonandvolley;
 
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -9,6 +11,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,8 +20,10 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.NetworkImageView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -32,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
     TextView textView;
     TextView idTextView;
     TextView dimosTextView;
+    Button resetImageButton;
+    NetworkImageView networkImageView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,10 +49,20 @@ public class MainActivity extends AppCompatActivity {
         textView = (TextView) findViewById(R.id.textview);
         idTextView = (TextView) findViewById(R.id.points_id);
         dimosTextView = (TextView) findViewById(R.id.points_dimos);
-        
+
         if (URL.isEmpty()){
             Toast.makeText(this,"Please go to MainActivity class and fill in your URL!",Toast.LENGTH_LONG).show();
         }
+
+        resetImageButton = (Button)findViewById(R.id.resetimagebutton);
+        resetImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                networkImageView.setImageResource(0);
+                networkImageView.setImageDrawable(null);
+                networkImageView.setImageResource(android.R.color.transparent);
+            }
+        });
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -52,10 +70,12 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                makeTheRequest();
             }
         });
+    }
 
-
+    private void makeTheRequest() {
         // Get a RequestQueue
         queue = MySingleton.getInstance(this.getApplicationContext()).
                 getRequestQueue();
@@ -69,11 +89,16 @@ public class MainActivity extends AppCompatActivity {
                     for (Point point : pointList){
                         Toast.makeText(getApplicationContext(),point.getDimos().toString(),Toast.LENGTH_LONG).show();
                         Log.e("A POINT ", point.toString());
-                        Log.e("A POINT DIMOS ",point.getDimos().toString());
-                        idTextView.setText(point.getId()+"");
+                        Log.e("A POINT DIMOS ", point.getDimos().toString());
+                        idTextView.setText(point.getId() + "");
                         dimosTextView.setText(point.getDimos().toString());
+                        System.out.println(point.getHighResImageUrl1());
                     }
 
+                    ImageLoader imageLoader = MySingleton.getInstance(getApplicationContext()).getImageLoader();
+                    networkImageView = (NetworkImageView)findViewById(R.id.networkimageview);
+                    networkImageView.setImageUrl(pointList.get(1).getHighResImageUrl1(),imageLoader);
+                    //get image at position 1
 
                 }
                 catch (Exception e) {
@@ -89,10 +114,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         queue.add(gsonRequest);
-
-
         //loadJsonFromURL();
     }
+
     private void loadJsonFromURL() {
 
         JsonArrayRequest request = new JsonArrayRequest
@@ -119,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
                 });
 
         MySingleton.getInstance(this).addToRequestQueue(request);
+
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -141,4 +166,7 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
+
 }
