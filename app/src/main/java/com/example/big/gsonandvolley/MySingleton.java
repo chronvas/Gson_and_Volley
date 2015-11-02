@@ -104,6 +104,7 @@ public class MySingleton {
             serverDate = parseDateAsEpoch(headerValue);
         }
 
+
         headerValue = headers.get("Cache-Control");
         if (headerValue != null) {
             hasCacheControl = true;
