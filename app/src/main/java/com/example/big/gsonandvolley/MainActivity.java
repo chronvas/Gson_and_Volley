@@ -54,15 +54,15 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this,"Please go to MainActivity class and fill in your URL!",Toast.LENGTH_LONG).show();
         }
 
-        resetImageButton = (Button)findViewById(R.id.resetimagebutton);
-        resetImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                networkImageView.setImageResource(0);
-                networkImageView.setImageDrawable(null);
-                networkImageView.setImageResource(android.R.color.transparent);
-            }
-        });
+//        resetImageButton = (Button)findViewById(R.id.resetimagebutton);
+//        resetImageButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                networkImageView.setImageResource(0);
+//                networkImageView.setImageDrawable(null);
+//                networkImageView.setImageResource(android.R.color.transparent);
+//            }
+//        });
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -90,16 +90,19 @@ public class MainActivity extends AppCompatActivity {
                     List<Point> pointList = Arrays.asList(points);
                     for (Point point : pointList){
                         Toast.makeText(getApplicationContext(),point.getDimos(),Toast.LENGTH_LONG).show();
-                        Log.e("A POINT ", point.toString());
+                        Log.e("A POINT ", point.getId() + "");
                         Log.e("A POINT DIMOS ", point.getDimos());
-                        idTextView.setText(point.getId());
+                        Log.e("A POINT image ", point.getHighResImageUrl1());
+                        idTextView.setText(point.getId()+"");
                         dimosTextView.setText(point.getDimos());
                         System.out.println(point.getHighResImageUrl1());
                     }
 
                     ImageLoader imageLoader = MySingleton.getInstance(getApplicationContext()).getImageLoader();
                     networkImageView = (NetworkImageView)findViewById(R.id.networkimageview);
-                    networkImageView.setImageUrl(pointList.get(1).getHighResImageUrl1(),imageLoader);
+                    String imgurl = pointList.get(1).getHighResImageUrl1();
+                    System.out.println(imgurl);
+                    networkImageView.setImageUrl(imgurl,imageLoader);
                     //get image at position 1
 
                 }
