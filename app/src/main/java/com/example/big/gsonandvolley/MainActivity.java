@@ -1,5 +1,6 @@
 package com.example.big.gsonandvolley;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -28,12 +29,13 @@ import com.android.volley.toolbox.NetworkImageView;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     RequestQueue queue;
-    public static String URL = "http://83.212.105.218/phpia_larisa/give_json2.php";
+    public static String URL = "";
     public static String URLTest = URL;
     TextView textView;
     TextView idTextView;
@@ -44,6 +46,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Context c  = this;
+        File filesDir = c.getFilesDir();
+        System.out.println("filesdir");
+        System.out.println(filesDir);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         textView = (TextView) findViewById(R.id.textview);
@@ -83,7 +91,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         GsonRequest gsonRequest = new GsonRequest(URLTest, Point[].class, null, new Response.Listener<Point[]>() {
-
             @Override
             public void onResponse(Point[] points) {
                 try {
@@ -93,14 +100,16 @@ public class MainActivity extends AppCompatActivity {
                         Log.e("A POINT ", point.getId() + "");
                         Log.e("A POINT DIMOS ", point.getDimos());
                         Log.e("A POINT image ", point.getHighResImageUrl1());
-                        idTextView.setText(point.getId()+"");
+                        idTextView.setText(point.getId() + "");
                         dimosTextView.setText(point.getDimos());
                         System.out.println(point.getHighResImageUrl1());
+
                     }
 
                     ImageLoader imageLoader = MySingleton.getInstance(getApplicationContext()).getImageLoader();
                     networkImageView = (NetworkImageView)findViewById(R.id.networkimageview);
                     String imgurl = pointList.get(1).getHighResImageUrl1();
+                    System.out.println("IMG URL");
                     System.out.println(imgurl);
                     networkImageView.setImageUrl(imgurl,imageLoader);
                     //get image at position 1
@@ -121,6 +130,8 @@ public class MainActivity extends AppCompatActivity {
         queue.add(gsonRequest);
         //loadJsonFromURL();
     }
+
+
 
 //    private void loadJsonFromURL() {
 //

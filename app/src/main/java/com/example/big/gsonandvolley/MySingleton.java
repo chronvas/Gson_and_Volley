@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.SystemClock;
 import android.util.LruCache;
+import android.widget.ImageView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Cache;
@@ -39,6 +40,7 @@ public class MySingleton {
     private ImageLoader mImageLoader;
     private static Context mCtx;
 
+
     private MySingleton(Context context) {
         mCtx = context;
         mRequestQueue = getRequestQueue();
@@ -46,15 +48,26 @@ public class MySingleton {
         mImageLoader = new ImageLoader(mRequestQueue,
                 new ImageLoader.ImageCache() {
                     private final LruCache<String, Bitmap>
-                            cache = new LruCache<String, Bitmap>(2000000);
+                            cache = new LruCache<String, Bitmap>(20);
 
                     @Override
                     public Bitmap getBitmap(String url) {
-                        return cache.get(url);
+                        // attempt to get bitmap from temp cache
+                        Bitmap s = cache.get(url);
+
+                        // if the temp cache is null, look further in the file cache
+                        if (s==null){
+                            s = SaveImageSingleton.getInstance(mCtx).getImage(url);
+                        }
+                        return s;
                     }
+
 
                     @Override
                     public void putBitmap(String url, Bitmap bitmap) {
+                        // put in the file cache
+                        SaveImageSingleton.getInstance(mCtx).saveImage(url,bitmap);
+                        // put in the temp cache
                         cache.put(url, bitmap);
                     }
                 });
@@ -84,6 +97,38 @@ public class MySingleton {
         return mImageLoader;
     }
 
+    private static class CustomImageLoader extends ImageLoader {
+        /**
+         * Constructs a new ImageLoader.
+         *
+         * @param queue      The RequestQueue to use for making image requests.
+         * @param imageCache The cache to use as an L1 cache.
+         */
+
+        public static ImageListener getImageListener(final ImageView view,
+                                                    final int defaultImageResId, final int errorImageResId) {
+            return new ImageListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    if (errorImageResId != 0) {
+                        view.setImageResource(errorImageResId);
+                    }
+                }
+
+                @Override
+                public void onResponse(ImageContainer response, boolean isImmediate) {
+                    if (response.getBitmap() != null) {
+                        view.setImageBitmap(response.getBitmap());
+                    } else if (defaultImageResId != 0) {
+                        view.setImageResource(defaultImageResId);
+                    }
+                }
+            };
+        }
+        public CustomImageLoader(RequestQueue queue, ImageCache imageCache) {
+            super(queue, imageCache);
+        }
+    }
 
     public static Cache.Entry parseCacheHeaders(NetworkResponse response) {
         long now = System.currentTimeMillis();
