@@ -42,15 +42,11 @@ public class MainActivity extends AppCompatActivity {
     TextView dimosTextView;
     Button resetImageButton;
     NetworkImageView networkImageView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        Context c  = this;
-        File filesDir = c.getFilesDir();
-        System.out.println("filesdir");
-        System.out.println(filesDir);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -62,15 +58,14 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this,"Please go to MainActivity class and fill in your URL!",Toast.LENGTH_LONG).show();
         }
 
-//        resetImageButton = (Button)findViewById(R.id.resetimagebutton);
-//        resetImageButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                networkImageView.setImageResource(0);
-//                networkImageView.setImageDrawable(null);
-//                networkImageView.setImageResource(android.R.color.transparent);
-//            }
-//        });
+        resetImageButton = (Button)findViewById(R.id.resetimagebutton);
+        resetImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                networkImageView.setImageResource(0);
+                networkImageView.setImageResource(android.R.color.transparent);
+            }
+        });
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -100,10 +95,8 @@ public class MainActivity extends AppCompatActivity {
                         Log.e("A POINT ", point.getId() + "");
                         Log.e("A POINT DIMOS ", point.getDimos());
                         Log.e("A POINT image ", point.getHighResImageUrl1());
-                        idTextView.setText(point.getId() + "");
+                        idTextView.setText(point.getId());
                         dimosTextView.setText(point.getDimos());
-                        System.out.println(point.getHighResImageUrl1());
-
                     }
 
                     ImageLoader imageLoader = MySingleton.getInstance(getApplicationContext()).getImageLoader();

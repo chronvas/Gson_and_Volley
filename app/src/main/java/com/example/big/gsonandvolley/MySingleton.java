@@ -48,7 +48,7 @@ public class MySingleton {
         mImageLoader = new ImageLoader(mRequestQueue,
                 new ImageLoader.ImageCache() {
                     private final LruCache<String, Bitmap>
-                            cache = new LruCache<String, Bitmap>(20);
+                            cache = new LruCache<String, Bitmap>(20); //20 items in cache
 
                     @Override
                     public Bitmap getBitmap(String url) {
@@ -97,39 +97,7 @@ public class MySingleton {
         return mImageLoader;
     }
 
-    private static class CustomImageLoader extends ImageLoader {
-        /**
-         * Constructs a new ImageLoader.
-         *
-         * @param queue      The RequestQueue to use for making image requests.
-         * @param imageCache The cache to use as an L1 cache.
-         */
-
-        public static ImageListener getImageListener(final ImageView view,
-                                                    final int defaultImageResId, final int errorImageResId) {
-            return new ImageListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    if (errorImageResId != 0) {
-                        view.setImageResource(errorImageResId);
-                    }
-                }
-
-                @Override
-                public void onResponse(ImageContainer response, boolean isImmediate) {
-                    if (response.getBitmap() != null) {
-                        view.setImageBitmap(response.getBitmap());
-                    } else if (defaultImageResId != 0) {
-                        view.setImageResource(defaultImageResId);
-                    }
-                }
-            };
-        }
-        public CustomImageLoader(RequestQueue queue, ImageCache imageCache) {
-            super(queue, imageCache);
-        }
-    }
-
+    //TODO: Symazema
     public static Cache.Entry parseCacheHeaders(NetworkResponse response) {
         long now = System.currentTimeMillis();
 
@@ -174,6 +142,7 @@ public class MySingleton {
 
         headerValue = headers.get("Expires");
         //inject!
+        //TODO: make this system time plus 6 months or so
         headerValue = "Mon, 18 Sep 2017  20:20:20 GMT";
         if (headerValue != null) {
             serverExpires = parseDateAsEpoch(headerValue);

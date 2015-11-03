@@ -34,15 +34,12 @@ public class SaveImageSingleton {
     // here the image based on the url will be returned, if found
     public Bitmap getImage (String ImageURL) {
         String storableFileName = ImageURL.substring(ImageURL.lastIndexOf("/") + 1);
-        System.out.println("STORABLE FN !!!");
-        System.out.println(storableFileName);
-        Bitmap bitmap=null;
+        Bitmap bitmap;
         try {
             File f= new File(filesDir + storableFileName);
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
             bitmap = BitmapFactory.decodeStream(new FileInputStream(f), null, options);
-
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -71,9 +68,6 @@ public class SaveImageSingleton {
         } catch (IOException e){
             e.printStackTrace();
         }
-
-
-
     }
 
     // Gets the appropriate Bitmap.CompressFormat according to the extension of the image
